@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<script src="libs/jquery.js"></script>
+		<script src="libs/underscore-min.js"></script>
+		<script src="libs/backbone-min.js"></script>
+	</head>
+	<body>
+		
+		<div id="panel" class="panel">面板</div>
+		<!-- Backbone前端mvc框架 -->
+		
+		<script>
+			
+			
+			/**
+			 * 数据///////////////////////////////////////////////////
+			 */
+			var Model = Backbone.Model.extend(
+			{
+				
+				initialize: function()
+				{
+		         this.bind("change:name",function()
+		         {
+		            console.log('name改为-'+this.get('name'))
+		        	})
+		    	},
+		    	
+		    	name :'我是M',
+				
+				ajax :function(v)
+				{
+					console.log('请求后台数据')
+				}
+			})
+			
+			
+			/**
+			 * 调用示例(调用方法/访问属性/修改属性/修改监听)
+			 */
+			var model = new Model()
+			
+			model.ajax()
+			
+			console.log(model.name)	
+			
+			model.set({name:'MVC中的M模型'});
+
+			
+			
+			
+			/**
+			 * 视图///////////////////////////////////////////////////
+			 */
+			var View = Backbone.View.extend(
+			{
+    			initialize:function()
+    			{
+        			$(this.el).bind('click',this.click)
+    			},
+    			
+    			el:$("#panel"),
+    			
+    			render:function(context) 
+    			{
+			      $(this.el).html(context);
+				},
+				
+				click:function()
+				{
+					console.log('点击事件')
+				}
+			})
+			
+			
+			/**
+			 * 调用示例
+			 */
+			var view = new View();
+			
+			console.log(view.el)
+			
+			view.render('<p>替换原有内容</p>')
+			
+			
+			
+			/**
+			 * 路由(监听url变化,绑定执行指定方法)///////////////////////
+			 * 
+			 * 当我们开发一个单页应用时，常常会遇到这样两个问题：我们在同一个页面中通过用户的操作来隐藏、显示HTML块，
+			 * 为用户提供一个无刷新、完整流畅的体验，但用户可能并不知道他当前正处于同一个页面中，因此他希望通过浏览
+			 * 器的“前进”和“后退”按钮来返回和前进到上一步操作。当他真正这样操作时，会离开当前页面，这显然不是用户所
+			 * 期望的。另一个问题是用户在单页应用中操作，当他读到一篇好的文章，或看到一个中意的商品时，他可能会将URL
+			 * 收藏起来或分享给自己的好友。但当他下一次重新打开这个链接地址，看到的却是应用的初始化状态，而并不是当
+			 * 初那篇文章或那个商品。
+			 * 
+			 * 将例子中的代码复制到你的页面中。假设你的页面地址为http://localhost/index.html，请依次访问下面的地址，并注意控制台的输出结果：
+             * http://localhost/index.html // 输出：应用入口方法
+			 * http://localhost/index.html#topic // 输出：渲染列表方法
+			 * http://localhost/index.html#topic/1023 // 输出：渲染详情方法, id为:1023
+			 * http://localhost/index.html#about // 输出：URL错误, 错误信息: about
+			 * 
+			 */
+			var Router = Backbone.Router.extend(
+			{
+    			routes : 
+    			{
+        			''          : 'main',  
+        			'topic'     : 'renderList',  
+        			'topic/:id' : 'renderDetail',  
+        			'*error'    : 'renderError'  
+	    		},  
+	    		
+	    		main:function() 
+	    		{
+	        		console.log('应用入口方法');  
+	    		},  
+	    		
+	    		renderList:function() 
+	    		{
+	        		console.log('渲染列表方法');  
+	    		}, 
+	    		
+				renderDetail:function(id) 
+				{
+			        console.log('渲染详情方法, id为: ' + id);  
+				}, 
+				
+	    		renderError : function(error) 
+	    		{
+	        		console.log('URL错误, 错误信息: ' + error);  
+	    		}  
+			});  
+  
+			var router = new Router();  
+			
+			Backbone.history.start();  
+			
+			
+		</script>
+	</body>
+</html>
